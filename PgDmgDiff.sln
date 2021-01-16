@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgDmgDiff", "PgDmgDiff\PgDmgDiff.csproj", "{CEFE618A-1582-487E-A296-6FE540F71465}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgDmgDiff-Plugin", "PgDmgDiff-Plugin\PgDmgDiff-Plugin.csproj", "{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{79EA13A2-250F-4473-878F-33CD0F8E09F2} = {79EA13A2-250F-4473-878F-33CD0F8E09F2}
@@ -17,16 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgDmgDiff", "PgDmgDiff\PgDmgDiff.csproj", "{BAE4A3C9-024C-4EE0-9497-1A29FB162E55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CEFE618A-1582-487E-A296-6FE540F71465}.Debug|x64.ActiveCfg = Debug|x64
-		{CEFE618A-1582-487E-A296-6FE540F71465}.Debug|x64.Build.0 = Debug|x64
-		{CEFE618A-1582-487E-A296-6FE540F71465}.Release|x64.ActiveCfg = Release|Any CPU
-		{CEFE618A-1582-487E-A296-6FE540F71465}.Release|x64.Build.0 = Release|Any CPU
 		{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}.Debug|x64.ActiveCfg = Debug|x64
 		{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}.Debug|x64.Build.0 = Debug|x64
 		{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}.Release|x64.ActiveCfg = Release|x64
@@ -35,6 +31,9 @@ Global
 		{79EA13A2-250F-4473-878F-33CD0F8E09F2}.Debug|x64.Build.0 = Debug|x64
 		{79EA13A2-250F-4473-878F-33CD0F8E09F2}.Release|x64.ActiveCfg = Release|x64
 		{79EA13A2-250F-4473-878F-33CD0F8E09F2}.Release|x64.Build.0 = Release|x64
+		{BAE4A3C9-024C-4EE0-9497-1A29FB162E55}.Debug|x64.ActiveCfg = Debug|x64
+		{BAE4A3C9-024C-4EE0-9497-1A29FB162E55}.Debug|x64.Build.0 = Debug|x64
+		{BAE4A3C9-024C-4EE0-9497-1A29FB162E55}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -284,6 +284,11 @@
             Logger.Write(Category.Information, message);
         }
 
+        /// <summary>
+        /// Gets the main window popup.
+        /// </summary>
+        public MainWindow? MainPopup { get; private set; }
+
         private Dictionary<ICommand, string> MenuHeaderTable = new Dictionary<ICommand, string>();
         private Dictionary<ICommand, Func<bool>> MenuIsVisibleTable = new Dictionary<ICommand, Func<bool>>();
         private Dictionary<ICommand, Func<bool>> MenuIsEnabledTable = new Dictionary<ICommand, Func<bool>>();
