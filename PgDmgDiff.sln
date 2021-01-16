@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgDmgDiff", "PgDmgDiff\PgDmgDiff.csproj", "{CEFE618A-1582-487E-A296-6FE540F71465}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PgDmgDiff-Plugin", "PgDmgDiff-Plugin\PgDmgDiff-Plugin.csproj", "{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{79EA13A2-250F-4473-878F-33CD0F8E09F2} = {79EA13A2-250F-4473-878F-33CD0F8E09F2}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PreBuild", "PreBuild\PreBuild.csproj", "{79EA13A2-250F-4473-878F-33CD0F8E09F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20D54C7F-A93A-4BAC-968B-DAD45BC3F194}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEFE618A-1582-487E-A296-6FE540F71465}.Debug|x64.ActiveCfg = Debug|x64
+		{CEFE618A-1582-487E-A296-6FE540F71465}.Debug|x64.Build.0 = Debug|x64
+		{CEFE618A-1582-487E-A296-6FE540F71465}.Release|x64.ActiveCfg = Release|Any CPU
+		{CEFE618A-1582-487E-A296-6FE540F71465}.Release|x64.Build.0 = Release|Any CPU
+		{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}.Debug|x64.ActiveCfg = Debug|x64
+		{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}.Debug|x64.Build.0 = Debug|x64
+		{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}.Release|x64.ActiveCfg = Release|x64
+		{06A4DE74-F6BD-45A2-89BE-A56800E1AEE0}.Release|x64.Build.0 = Release|x64
+		{79EA13A2-250F-4473-878F-33CD0F8E09F2}.Debug|x64.ActiveCfg = Debug|x64
+		{79EA13A2-250F-4473-878F-33CD0F8E09F2}.Debug|x64.Build.0 = Debug|x64
+		{79EA13A2-250F-4473-878F-33CD0F8E09F2}.Release|x64.ActiveCfg = Release|x64
+		{79EA13A2-250F-4473-878F-33CD0F8E09F2}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2F26A9A-2F33-4783-97A6-4E7DB44887BD}
+	EndGlobalSection
+EndGlobal
