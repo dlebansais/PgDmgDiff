@@ -4,6 +4,9 @@
     using System.Collections.Generic;
     using System.Drawing;
     using System.Globalization;
+    using System.IO;
+    using System.Text;
+    using System.Windows;
     using System.Windows.Input;
     using System.Windows.Threading;
     using RegistryTools;
@@ -67,6 +70,38 @@
             Dispatcher = dispatcher;
             Settings = settings;
             Logger = logger;
+
+            // Create a new FileSystemWatcher and set its properties.
+            Watcher = new FileSystemWatcher();
+            string LocalLowPath = NativeMethods.GetKnownFolderPath(NativeMethods.LocalLowId);
+            Watcher.Path = @$"{LocalLowPath}\Elder Game\Project Gorgon\Books\";
+
+            // Watch for changes in LastAccess and LastWrite times, and
+            // the renaming of files or directories.
+            Watcher.NotifyFilter = NotifyFilters.LastAccess
+                                    | NotifyFilters.LastWrite
+                                    | NotifyFilters.FileName
+                                    | NotifyFilters.DirectoryName;
+
+            // Only watch some files.
+            Watcher.Filter = FilePattern;
+
+            // Add event handlers.
+            Watcher.Changed += OnChanged;
+            Watcher.Created += OnChanged;
+            Watcher.Deleted += OnChanged;
+
+            if (ParseLatestFile(out string LatestFile, out int TotalDamage, out int Killed))
+            {
+                CurrentLatestFile = LatestFile;
+                LastTotalDamage = TotalDamage;
+                LastKilled = Killed;
+                LastDamageDiff = 0;
+                LastKilledDiff = 0;
+            }
+
+            // Begin watching.
+            Watcher.EnableRaisingEvents = true;
         }
 
         /// <summary>
@@ -284,11 +319,6 @@
             Logger.Write(Category.Information, message);
         }
 
-        /// <summary>
-        /// Gets the main window popup.
-        /// </summary>
-        public MainWindow? MainPopup { get; private set; }
-
         private Dictionary<ICommand, string> MenuHeaderTable = new Dictionary<ICommand, string>();
         private Dictionary<ICommand, Func<bool>> MenuIsVisibleTable = new Dictionary<ICommand, Func<bool>>();
         private Dictionary<ICommand, Func<bool>> MenuIsEnabledTable = new Dictionary<ICommand, Func<bool>>();
@@ -296,6 +326,116 @@
         private Dictionary<ICommand, Action> MenuHandlerTable = new Dictionary<ICommand, Action>();
         private bool IsIconChanged;
         private bool IsMenuChanged;
+        #endregion
+
+        #region File System
+        // Define the event handlers.
+        private void OnChanged(object source, FileSystemEventArgs e)
+        {
+            if (e.ChangeType == WatcherChangeTypes.Created)
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(OnNewFile));
+        }
+
+        private void OnNewFile()
+        {
+            if (ParseLatestFile(out string NewLatestFile, out int TotalDamage, out int Killed) && NewLatestFile != CurrentLatestFile)
+            {
+                CurrentLatestFile = NewLatestFile;
+
+                if (LastTotalDamage > 0 && LastKilled > 0)
+                {
+                    if (LastTotalDamage < TotalDamage && LastKilled < Killed)
+                    {
+                        LastDamageDiff = TotalDamage - LastTotalDamage;
+                        LastTotalDamage = TotalDamage;
+                        LastKilledDiff = Killed - LastKilled;
+                        LastKilled = Killed;
+                    }
+
+                    int Dpm = LastDamageDiff / LastKilledDiff;
+                    string Summary = $"Total: {LastDamageDiff}, Kills: {LastKilledDiff}, Dpm: {Dpm}";
+
+                    Clipboard.SetText(Summary);
+                }
+            }
+        }
+
+        private bool ParseLatestFile(out string latestFile, out int totalDamage, out int killed)
+        {
+            latestFile = string.Empty;
+            totalDamage = 0;
+            killed = 0;
+
+            string[] FileNames = Directory.GetFiles(Watcher.Path, FilePattern);
+            bool Result = false;
+
+            DateTime MostRecentTime = DateTime.MinValue;
+            foreach (string FileName in FileNames)
+            {
+                DateTime FileTime = File.GetLastWriteTimeUtc(FileName);
+                if (MostRecentTime < FileTime)
+                {
+                    try
+                    {
+                        using FileStream stream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+                        using StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                        string Content = reader.ReadToEnd();
+
+                        if (ReadIntValue(Content, "You have dealt <b>", out totalDamage) && ReadIntValue(Content, "You have killed <b>", out killed))
+                        {
+                            MostRecentTime = FileTime;
+                            latestFile = FileName;
+                            Result = true;
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+
+            return Result;
+        }
+
+        private static bool ReadIntValue(string content, string pattern, out int value)
+        {
+            value = -1;
+
+            int StartIndex = content.IndexOf(pattern);
+            if (StartIndex >= 0)
+            {
+                StartIndex += pattern.Length;
+                int EndIndex = StartIndex + 1;
+
+                while (EndIndex < content.Length)
+                {
+                    string StringValue = content.Substring(StartIndex, EndIndex - StartIndex);
+                    EndIndex++;
+
+                    StringValue = StringValue.Replace(CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator, string.Empty);
+                    StringValue = StringValue.Replace(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, string.Empty);
+
+                    if (int.TryParse(StringValue, NumberStyles.Integer, CultureInfo.CurrentCulture, out int LastValue))
+                    {
+                        value = LastValue;
+                    }
+                    else if (value >= 0)
+                        break;
+                }
+            }
+
+            return value >= 0;
+        }
+
+        private const string FilePattern = "PlayerAge_*_*.txt";
+        private string BookFolder = string.Empty;
+
+        private FileSystemWatcher Watcher = new FileSystemWatcher();
+        private string CurrentLatestFile = string.Empty;
+        private int LastTotalDamage;
+        private int LastKilled;
+        private int LastDamageDiff;
+        private int LastKilledDiff;
         #endregion
 
         #region Implementation of IDisposable
@@ -342,6 +482,10 @@
         private void DisposeNow()
         {
             using (Settings)
+            {
+            }
+
+            using (Watcher)
             {
             }
         }
