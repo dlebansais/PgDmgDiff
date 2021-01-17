@@ -2,7 +2,7 @@
 Calculate damage dealt from the /age command in [Project: Gorgon](https://projectgorgon.com/). 
 
 # Using the program
-Copy [the latest release](https://github.com/dlebansais/Kill-Update/releases/download/v1.0.0/PgDmgDiff.exe) in a directory, then run it as administrator (If you don't want that, see below). This will create a little icon in the task bar.
+Copy [the latest release](https://github.com/dlebansais/PgDmgDiff/releases/download/v1.0.0/PgDmgDiff.exe) in a directory, then run it as administrator (If you don't want that, see below). This will create a little icon in the task bar.
 
 Right-click the icon to pop a menu with the following items:
 

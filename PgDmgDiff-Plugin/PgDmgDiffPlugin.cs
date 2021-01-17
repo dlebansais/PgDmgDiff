@@ -2,10 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Globalization;
     using System.IO;
     using System.Text;
+    using System.Threading;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Threading;
@@ -207,7 +209,8 @@
         /// <returns>True if the tooltip has changed since the last call, false otherwise.</returns>
         public bool GetIsToolTipChanged()
         {
-            bool Result = false;
+            bool Result = IsTooltipChanged;
+            IsTooltipChanged = false;
 
             return Result;
         }
@@ -219,9 +222,7 @@
         {
             get
             {
-                string Result = string.Empty;
-
-                return Result;
+                return LastSummary;
             }
         }
 
@@ -332,7 +333,11 @@
         private void OnChanged(object source, FileSystemEventArgs e)
         {
             if (e.ChangeType == WatcherChangeTypes.Created)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(OnNewFile));
+            }
         }
 
         private void OnNewFile()
@@ -351,10 +356,15 @@
                         LastKilled = Killed;
                     }
 
-                    long Dpm = LastDamageDiff / LastKilledDiff;
-                    string Summary = $"Total: {LastDamageDiff}, Kills: {LastKilledDiff}, Dpm: {Dpm}";
+                    if (LastKilledDiff > 0)
+                    {
+                        long Dpm = LastDamageDiff / LastKilledDiff;
 
-                    Clipboard.SetText(Summary);
+                        LastSummary = $"Total: {LastDamageDiff}, Kills: {LastKilledDiff}, Dpm: {Dpm}";
+
+                        Clipboard.SetText(LastSummary);
+                        IsTooltipChanged = true;
+                    }
                 }
             }
         }
@@ -387,10 +397,16 @@
                             Result = true;
                         }
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        Debug.WriteLine($"{FileName}: {e.Message}");
                     }
                 }
+            }
+
+            if (Result == true)
+            {
+                Debug.WriteLine($"Latest file is: {latestFile}");
             }
 
             return Result;
@@ -435,6 +451,8 @@
         private long LastKilled;
         private long LastDamageDiff;
         private long LastKilledDiff;
+        private string LastSummary = string.Empty;
+        private bool IsTooltipChanged = false;
         #endregion
 
         #region Implementation of IDisposable
