@@ -71,37 +71,7 @@
             Settings = settings;
             Logger = logger;
 
-            // Create a new FileSystemWatcher and set its properties.
-            Watcher = new FileSystemWatcher();
-            string LocalLowPath = NativeMethods.GetKnownFolderPath(NativeMethods.LocalLowId);
-            Watcher.Path = @$"{LocalLowPath}\Elder Game\Project Gorgon\Books\";
-
-            // Watch for changes in LastAccess and LastWrite times, and
-            // the renaming of files or directories.
-            Watcher.NotifyFilter = NotifyFilters.LastAccess
-                                    | NotifyFilters.LastWrite
-                                    | NotifyFilters.FileName
-                                    | NotifyFilters.DirectoryName;
-
-            // Only watch some files.
-            Watcher.Filter = FilePattern;
-
-            // Add event handlers.
-            Watcher.Changed += OnChanged;
-            Watcher.Created += OnChanged;
-            Watcher.Deleted += OnChanged;
-
-            if (ParseLatestFile(out string LatestFile, out int TotalDamage, out int Killed))
-            {
-                CurrentLatestFile = LatestFile;
-                LastTotalDamage = TotalDamage;
-                LastKilled = Killed;
-                LastDamageDiff = 0;
-                LastKilledDiff = 0;
-            }
-
-            // Begin watching.
-            Watcher.EnableRaisingEvents = true;
+            InitializeFileParsing();
         }
 
         /// <summary>
@@ -329,7 +299,36 @@
         #endregion
 
         #region File System
-        // Define the event handlers.
+        private void InitializeFileParsing()
+        {
+            Watcher = new FileSystemWatcher();
+
+            string LocalLowPath = NativeMethods.GetKnownFolderPath(NativeMethods.LocalLowId);
+            Watcher.Path = @$"{LocalLowPath}\Elder Game\Project Gorgon\Books\";
+
+            // Watch for changes in LastAccess and LastWrite times, and
+            // the renaming of files or directories.
+            Watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+
+            // Only watch some files.
+            Watcher.Filter = FilePattern;
+
+            // Add event handlers.
+            Watcher.Created += OnChanged;
+
+            if (ParseLatestFile(out string LatestFile, out long TotalDamage, out long Killed))
+            {
+                CurrentLatestFile = LatestFile;
+                LastTotalDamage = TotalDamage;
+                LastKilled = Killed;
+                LastDamageDiff = 0;
+                LastKilledDiff = 0;
+            }
+
+            // Begin watching.
+            Watcher.EnableRaisingEvents = true;
+        }
+
         private void OnChanged(object source, FileSystemEventArgs e)
         {
             if (e.ChangeType == WatcherChangeTypes.Created)
@@ -338,7 +337,7 @@
 
         private void OnNewFile()
         {
-            if (ParseLatestFile(out string NewLatestFile, out int TotalDamage, out int Killed) && NewLatestFile != CurrentLatestFile)
+            if (ParseLatestFile(out string NewLatestFile, out long TotalDamage, out long Killed) && NewLatestFile != CurrentLatestFile)
             {
                 CurrentLatestFile = NewLatestFile;
 
@@ -352,7 +351,7 @@
                         LastKilled = Killed;
                     }
 
-                    int Dpm = LastDamageDiff / LastKilledDiff;
+                    long Dpm = LastDamageDiff / LastKilledDiff;
                     string Summary = $"Total: {LastDamageDiff}, Kills: {LastKilledDiff}, Dpm: {Dpm}";
 
                     Clipboard.SetText(Summary);
@@ -360,7 +359,7 @@
             }
         }
 
-        private bool ParseLatestFile(out string latestFile, out int totalDamage, out int killed)
+        private bool ParseLatestFile(out string latestFile, out long totalDamage, out long killed)
         {
             latestFile = string.Empty;
             totalDamage = 0;
@@ -397,7 +396,7 @@
             return Result;
         }
 
-        private static bool ReadIntValue(string content, string pattern, out int value)
+        private static bool ReadIntValue(string content, string pattern, out long value)
         {
             value = -1;
 
@@ -415,7 +414,7 @@
                     StringValue = StringValue.Replace(CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator, string.Empty);
                     StringValue = StringValue.Replace(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, string.Empty);
 
-                    if (int.TryParse(StringValue, NumberStyles.Integer, CultureInfo.CurrentCulture, out int LastValue))
+                    if (long.TryParse(StringValue, NumberStyles.Integer, CultureInfo.CurrentCulture, out long LastValue))
                     {
                         value = LastValue;
                     }
@@ -432,10 +431,10 @@
 
         private FileSystemWatcher Watcher = new FileSystemWatcher();
         private string CurrentLatestFile = string.Empty;
-        private int LastTotalDamage;
-        private int LastKilled;
-        private int LastDamageDiff;
-        private int LastKilledDiff;
+        private long LastTotalDamage;
+        private long LastKilled;
+        private long LastDamageDiff;
+        private long LastKilledDiff;
         #endregion
 
         #region Implementation of IDisposable
