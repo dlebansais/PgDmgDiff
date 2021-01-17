@@ -1,8 +1,7 @@
-﻿namespace PgDmgDiff2
+﻿namespace PgDmgDiff
 {
     using System;
     using System.Windows;
-    using PgDmgDiff;
 
     /// <summary>
     /// Represents an application that automatically unblock files downloaded from the Internet.
