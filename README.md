@@ -10,7 +10,7 @@ Right-click the icon to pop a menu with the following items:
 + Exit
 
 # How does it work?
-Every time you type the /age command, then save it in a file with the save button, this application reads the new file. It then compares values in it with previous values it has read in previous files, calculate the difference and saves a summary in the clipboard.
+Every time you type the /age command, then save it in a file with the `Save` button, this application reads the new file. It then compares values in it with previous values it has read in previous files, calculate the difference and saves a summary in the clipboard.
 
 Currently, this application reads:
 
@@ -19,9 +19,9 @@ Currently, this application reads:
 
 # Damage summary
 
-In the damage, just start chatting with return and press Ctrl+V, to get a summary similar to this:
+In the game, just start chatting with return and press Ctrl+V, to get a summary similar to this:
 
-Total: 8650, Kills: 13, Dpm: 665
+	Total: 8650, Kills: 13, Dpm: 665
 
 Dpm is the damage per monster.
  
