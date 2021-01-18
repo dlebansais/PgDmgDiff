@@ -6,12 +6,16 @@ Copy [the latest release](https://github.com/dlebansais/PgDmgDiff/releases/downl
 
 Right-click the icon to pop a menu with the following items:
 
-+ Load at startup. When checked, the application is loaded when a user logs in.
-+ Exit
++ *Load at startup*. When checked, the application is loaded when a user logs in.
++ *Exit*
 
 You also need to enable the `BookSaveToFile` option in the game special settings.
 
 ![Special Settings](/Screenshots/Settings.png?raw=true "The game special settings")
+
+# No 'Run as administrator'
+
+If you don't want to run the program as administrator, you can still add it to the scheduler manually, just click the *Load at startup* menu and follow instructions.
 
 # How does it work?
 Every time you type the /age command, then save it in a file with the `Save` button, this application reads the new file. It then compares values in it with previous values it has read in previous files, calculate the difference and saves a summary in the clipboard.
